@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 
+use AppBundle\Command\VKUser;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Debug\Debug;
@@ -25,4 +26,5 @@ if ($debug) {
 
 $kernel = new AppKernel($env, $debug);
 $application = new Application($kernel);
+$application->add(new VKUser());
 $application->run($input);
