@@ -13,3 +13,8 @@ services:
         class:        AppBundle\Model\Input\CSVData
     vk.from_single:
         class:        AppBundle\Model\Input\SingleData
+    vk.sdk:
+        class:        BW\Vkontakte
+    vk.common_api:
+        class:        AppBundle\Model\VkApi\Common
+        arguments: ["@vk.sdk", '%vk_access_token%']
