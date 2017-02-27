@@ -17,3 +17,5 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
+    vk_access_token: d247fc32d247fc32d2694542a7d21dfe3fdd247d247fc328af3914a787e8f5b5d0c7077
+
