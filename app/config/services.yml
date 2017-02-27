@@ -8,8 +8,11 @@ services:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
     vk.user:
-        class:        AppBundle\Model\User\RabbitMQVKUser
+        class:        AppBundle\Model\User\Facade\RabbitMQVKUser
+        arguments: ['@old_sound_rabbit_mq.import_user_producer']
     vk.from_csv:
         class:        AppBundle\Model\Input\CSVData
     vk.from_single:
         class:        AppBundle\Model\Input\SingleData
+    vk.import_user_callback:
+        class:        AppBundle\Consumer\UserConsumer

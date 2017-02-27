@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Model\User;
+namespace AppBundle\Model\User\Facade;
 
 /**
  * Class RabbitMQVKUser
@@ -10,7 +10,7 @@ namespace AppBundle\Model\User;
  *
  * @package AppBundle\Model\User
  */
-class RabbitMQVKUser implements \AppBundle\Model\User\AbstractVKUser
+class RabbitMQVKUser implements \AppBundle\Model\User\Facade\AbstractVKUser
 {
     /**
      * @var RabbitMQ producer object which puts data to query

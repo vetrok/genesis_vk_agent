@@ -29,6 +29,14 @@ class VKUser extends ContainerAwareCommand
                 '0'
             )
 
+            ->addOption(
+                'test',
+                null,
+                InputArgument::OPTIONAL,
+                'Tester',
+                '0'
+            )
+
             // the full command description shown when running the command with
             // the "--help" option
             ->setHelp('Import VK user by ID, you can pass single id or .csv file with multiple id\'s')
@@ -49,6 +57,8 @@ class VKUser extends ContainerAwareCommand
         //Recognize input type and get values from it
         if ($input->getOption('users_csv') > 0) {
             $this->parseCSVAction($userId);
+        } else if ($input->getOption('test')) {
+            $this->test($userId);
         } else {
             $this->indexAction($userId);
         }
@@ -95,5 +105,12 @@ class VKUser extends ContainerAwareCommand
 
             $vkUser->importUserFacade($singleId);
         }
+    }
+
+    public function test($userId)
+    {
+//        echo $this->getContainer()->get('old_sound_rabbit_mq.import_user_producer')->publish($userId);
+        echo 1010;
+//        $this->get('vk_user_rabbit_mq.user_creator_producer')->publish(1234321);
     }
 } 
