@@ -8,7 +8,13 @@ services:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
     vk.rabbitmq_user:
-        class:        AppBundle\Model\User\RabbitMQVKUser
+#        class:        AppBundle\Model\User\RabbitMQVKUser
+        class:        AppBundle\Model\User\DbVkUser
+        arguments: ["@vk.common_api", "@doctrine.orm.default_entity_manager"]
+
+    vk.db_user:
+            class:        AppBundle\Model\User\RabbitMQVKUser
+#            class:        AppBundle\Model\User\DbVkUser
     vk.from_csv:
         class:        AppBundle\Model\Input\CSVData
     vk.from_single:

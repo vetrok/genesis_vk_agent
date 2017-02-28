@@ -7,11 +7,18 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Users
  *
- * @ORM\Table(name="users")
+ * @ORM\Table(name="users", uniqueConstraints={@ORM\UniqueConstraint(name="UNIQ_1483A5E9C5978E52", columns={"vk_id"})})
  * @ORM\Entity
  */
 class Users
 {
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="vk_id", type="integer", nullable=false)
+     */
+    private $vkId;
+
     /**
      * @var string
      *
@@ -50,6 +57,30 @@ class Users
     private $id;
 
 
+
+    /**
+     * Set vkId
+     *
+     * @param integer $vkId
+     *
+     * @return Users
+     */
+    public function setVkId($vkId)
+    {
+        $this->vkId = $vkId;
+
+        return $this;
+    }
+
+    /**
+     * Get vkId
+     *
+     * @return integer
+     */
+    public function getVkId()
+    {
+        return $this->vkId;
+    }
 
     /**
      * Set firstName

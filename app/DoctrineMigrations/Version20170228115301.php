@@ -16,7 +16,7 @@ class Version20170228115301 extends AbstractMigration
     public function up(Schema $schema)
     {
         $myTable = $schema->createTable('photo_sizes');
-        $myTable->addColumn('id', 'integer', ['autoincrement' => true]);
+        $myTable->addColumn('id', 'integer', ['autoincrement' => true, 'unsigned ' => true]);
         $myTable->addColumn('photo_id', 'integer');
         $myTable->addColumn('size', 'string', ['length' => 32]);
         $myTable->addColumn('link', 'string');
