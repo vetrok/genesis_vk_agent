@@ -16,15 +16,16 @@ class Version20170228115301 extends AbstractMigration
     public function up(Schema $schema)
     {
         $myTable = $schema->createTable('photo_sizes');
+        $myTable->addColumn('id', 'integer', ['autoincrement' => true]);
         $myTable->addColumn('photo_id', 'integer');
-        $myTable->addColumn('owner_id', 'integer');
         $myTable->addColumn('size', 'string', ['length' => 32]);
         $myTable->addColumn('link', 'string');
-        $myTable->setPrimaryKey(['photo_id', 'owner_id', 'size']);
+        $myTable->setPrimaryKey(['id']);
+        $myTable->addUniqueIndex(["photo_id", "size"]);
         $myTable->addForeignKeyConstraint(
             'photos',
-            ['photo_id', 'owner_id'],
-            ['id', 'owner_id'],
+            ['photo_id'],
+            ['id'],
             ['onUpdate' => 'CASCADE', 'onDelete' => 'CASCADE']
         );
     }
