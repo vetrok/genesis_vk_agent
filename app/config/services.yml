@@ -7,7 +7,7 @@ services:
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
-    vk.user:
+    vk.rabbitmq_user:
         class:        AppBundle\Model\User\RabbitMQVKUser
     vk.from_csv:
         class:        AppBundle\Model\Input\CSVData

@@ -22,11 +22,11 @@ class VKUser extends ContainerAwareCommand
             ->addArgument('user_id', InputArgument::REQUIRED)
 
             ->addOption(
-                'users_csv',
+                'data_type',
                 null,
                 InputArgument::OPTIONAL,
-                'Flag for path to .csv file with id\'s',
-                '0'
+                'Enter data type for user id\'s',
+                'int'
             )
 
             ->addOption(
@@ -55,9 +55,10 @@ class VKUser extends ContainerAwareCommand
         //VK id can be int or string
         $userId = $input->getArgument('user_id');
         //Recognize input type and get values from it
-        if ($input->getOption('users_csv') > 0) {
+        if ($input->getOption('data_type') == 'csv') {
             $this->parseCSVAction($userId);
         } else if ($input->getOption('test')) {
+            //TODO: del test
             $this->test($userId);
         } else {
             $this->indexAction($userId);
@@ -100,7 +101,7 @@ class VKUser extends ContainerAwareCommand
 
         //TODO: validation open question - should validate on model or here?
         //Insert id's
-        $vkUser = $this->getContainer()->get('vk.user');
+        $vkUser = $this->getContainer()->get('vk.rabbitmq_user');
         foreach ($usersId as $singleId) {
 
             $vkUser->importUserFacade($singleId);
