@@ -8,7 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
-class VKUser extends ContainerAwareCommand
+class ImportVkUser extends ContainerAwareCommand
 {
     protected function configure()
     {

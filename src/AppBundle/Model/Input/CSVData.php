@@ -13,19 +13,29 @@ use Symfony\Component\Finder\Finder;
  */
 class CSVData implements \AppBundle\Model\Input\AbstractInputData
 {
+    /**
+     * Validate file and parse data from it
+     *
+     * @param $input
+     * @return array
+     * @throws \Exception
+     */
     public function retrieveAllIds($input)
     {
         if (!file_exists($input)) {
-            throw new \Exception('File doesn\'t exist');
+
+            throw new \ParseError('File doesn\'t exist');
         }
         if (!is_readable($input)) {
-            throw new \Exception('Can\'t read file');
+            throw new \ParseError('Can\'t read file');
         }
         if (filesize($input) == 0) {
-            throw new \Exception('File is empty');
+            throw new \ParseError('File is empty');
         }
 
         $idsArray = str_getcsv(file_get_contents($input));
+
+        //TODO: check is array has empty values
 
         return $idsArray;
     }

@@ -25,7 +25,8 @@
         "twig/twig": "^1.0||^2.0",
         "symfony/console": "^3.2",
         "php-amqplib/rabbitmq-bundle": "^1.12",
-        "bocharsky-bw/vkontakte-php-sdk": "^2.0"
+        "bocharsky-bw/vkontakte-php-sdk": "^2.0",
+        "doctrine/doctrine-migrations-bundle": "^1.0"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
