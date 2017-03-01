@@ -2,8 +2,14 @@
 
 namespace AppBundle\Model\VkApi;
 
-
-class Common
+/**
+ * Class Common
+ *
+ * Adapter for VK api
+ *
+ * @package AppBundle\Model\VkApi
+ */
+class Common implements AbstractCommon
 {
     /**
      * @var token for pi access
@@ -24,14 +30,31 @@ class Common
         $this->setVkApi($vk);
     }
 
+    /**
+     * Returns response from api for user data
+     *
+     * @param $userId
+     * @return mixed
+     */
     public function getUser($userId)
     {
-        return $this->getVkApi()->api('users.get', [
-            'user_id' => $userId,
+        $apiResponse = $this->getVkApi()->api('users.get', [
+            'user_ids' => $userId,
+            'fields' => 'screen_name,',
             'access_token' => $this->getAccessToken()
         ]);
+
+        return $apiResponse;
     }
 
+    /**
+     * Returns response from api for user albums data
+     *
+     * @param $userId
+     * @param int $offset
+     * @param int $limit
+     * @return mixed
+     */
     public function getAlbums($userId, $offset = 0, $limit = 200)
     {
         return $this->getVkApi()->api('photos.getAlbums', [
@@ -42,11 +65,21 @@ class Common
         ]);
     }
 
-    public function getImagesFromAlbum($userId, $albumId, $offset = 0, $limit = 200)
+    /**
+     * Returns response from api for user photos data
+     *
+     * @param $userId
+     * @param $albumId
+     * @param int $offset
+     * @param int $limit
+     * @return mixed
+     */
+    public function getPhotosFromAlbum($userId, $albumId, $offset = 0, $limit = 200)
     {
         return $this->getVkApi()->api('photos.get', [
             'owner_id' => $userId,
             'album_id' => $albumId,
+            'photo_sizes' => 1,
             'offset' => $offset,
             'count' => $limit,
             'access_token' => $this->getAccessToken(),
@@ -64,7 +97,7 @@ class Common
     /**
      * @param mixed $vkApi
      */
-    public function setVkApi($vkApi)
+    protected function setVkApi($vkApi)
     {
         $this->vkApi = $vkApi;
     }
@@ -83,11 +116,23 @@ class Common
     }
 
     /**
+     * Every user has list of default albums
+     *
      * @return mixed
      */
     public function getDefaultAlbums()
     {
-        return $this->defaultAlbums;
+        return [
+            [
+                'id' => -7,
+                'title' => 'wall',
+                'created' => 0
+            ],
+            [
+                'id' => -6,
+                'title' => 'profile',
+                'created' => 0
+            ],
+        ];
     }
-
 } 

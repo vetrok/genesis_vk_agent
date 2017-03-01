@@ -2,6 +2,14 @@
 
 namespace AppBundle\Model\User;
 
+use AppBundle\Entity\Albums;
+use AppBundle\Entity\Photos;
+use AppBundle\Entity\PhotoSizes;
+use AppBundle\Entity\Users;
+use AppBundle\Model\User\AbstractVKUser;
+use AppBundle\Model\VkApi\Common;
+use AppBundle\Model\VkApi\CommonValidator;
+
 /**
  * Class RabbitMQVKUser
  *
@@ -10,10 +18,10 @@ namespace AppBundle\Model\User;
  *
  * @package AppBundle\Model\User
  */
-class DbVkUser implements \AppBundle\Model\User\AbstractVKUser
+class DbVkUser implements AbstractVKUser
 {
     /**
-     * @var \AppBundle\Model\VkApi\Common api data manipulator
+     * @var Common api data manipulator
      */
     protected $vkCommonApi;
 
@@ -22,10 +30,21 @@ class DbVkUser implements \AppBundle\Model\User\AbstractVKUser
      */
     protected $em;
 
-    public function __construct(\AppBundle\Model\VkApi\Common $vkCommonApi, $em)
+    /**
+     * @var CommonValidator
+     */
+    protected $vkApiValidator;
+
+    /**
+     * @var int
+     */
+    protected $offsetForApiResponses = 200;
+
+    public function __construct(Common $vkCommonApi, $em, CommonValidator $vkApiValidator)
     {
         $this->setVkCommonApi($vkCommonApi);
         $this->setEm($em);
+        $this->setVkApiValidator($vkApiValidator);
     }
 
     /**
@@ -36,21 +55,90 @@ class DbVkUser implements \AppBundle\Model\User\AbstractVKUser
     public function importUserFacade($id)
     {
         $api = $this->getVkCommonApi();
-        $userApi = $api->getUser(1)[0];
-        $userDb = new \AppBundle\Entity\Users();
-        $userDb->setVkId($userApi['id']);
+        $apiResponseUser = $api->getUser($id);
+        $apiValidator = $this->getVkApiValidator();
+        $apiValidator->checkIsUserValid($apiResponseUser);
+        $userApi = $apiResponseUser[0];
+
+        //Delete user
+        $em = $this->getEm();
+        $em->getConnection()->beginTransaction();
+        $userOldDb = $em->getRepository('\AppBundle\Entity\Users')->findBy(['vkId' => $id]);
+        if (!empty($userOldDb)) {
+            //I'm sure that only one user can be found, because DB constraint
+            $em->remove($userOldDb[0]);
+            $em->flush();
+        }
+
+        //Create new user
+        $userDb = new Users();
+        $vkUserId = $userApi['id'];
+        $userDb->setVkId($vkUserId);
         $userDb->setFirstName($userApi['first_name']);
         $userDb->setLastName($userApi['last_name']);
-        $userDb->setScreenName('123');
-        $userDb->setCreated('123');
-
-        $em = $this->getEm();
+        $userDb->setScreenName($userApi['screen_name']);
         $em->persist($userDb);
+
+        //Get user albums through cicle
+        $keyForItemsInApiResponse = 'items';
+        $stopFlagAlbums = true;
+        for ($albumOffset = 0; $stopFlagAlbums; $albumOffset+= $this->getOffsetForApiResponses()) {
+            $apiResponseAlbums = $api->getAlbums($vkUserId, $albumOffset);
+            if (!$apiValidator->areItemsExists($apiResponseAlbums)) {
+
+                //Add default albums and after that stop album seeding
+                $apiResponseAlbums[$keyForItemsInApiResponse] = $api->getDefaultAlbums();
+                $stopFlagAlbums = false;
+            }
+
+            foreach ($apiResponseAlbums[$keyForItemsInApiResponse ] as $singleAlbum) {
+                //Create new album
+                $albumDb = new Albums();
+                $albumDb->setUser($userDb);
+                $albumDb->setCreated($singleAlbum['created']);
+                $albumDb->setTitle($singleAlbum['title']);
+                $albumDb->setVkId($singleAlbum['id']);
+                $em = $this->getEm();
+                $em->persist($albumDb);
+
+                $vkAlbumId = $singleAlbum['id'];
+                for ($photoOffset = 0;;$photoOffset += $this->getOffsetForApiResponses()) {
+                    $apiResponsePhotos = $api->getPhotosFromAlbum(
+                        $vkUserId,
+                        $vkAlbumId,
+                        $photoOffset
+                    );
+
+                    if (!$apiValidator->areItemsExists($apiResponsePhotos)) {
+                        break;
+                    }
+
+                    foreach ($apiResponsePhotos[$keyForItemsInApiResponse ] as $singlePhotoApi) {
+                        $photoDb = new Photos();
+                        $photoDb->setAlbum($albumDb);
+                        $photoDb->setVkId($singlePhotoApi['id']);
+                        $photoDb->setCreated($singlePhotoApi['date']);
+                        $em->persist($photoDb);
+
+                        //Every photo has few sizes - create new photo sizes
+                        foreach ($singlePhotoApi['sizes'] as $singlePhotoSize) {
+                            $photoSizeDb = new PhotoSizes();
+                            $photoSizeDb->setPhoto($photoDb);
+                            $photoSizeDb->setLink($singlePhotoSize['src']);
+                            $photoSizeDb->setType($singlePhotoSize['type']);
+                            $em->persist($photoSizeDb);
+                        }
+                    }
+                }
+            }
+        }
+
         $em->flush();
+        $em->getConnection()->commit();
     }
 
     /**
-     * @return \AppBundle\Model\VkApi\Common
+     * @return Common
      */
     public function getVkCommonApi()
     {
@@ -58,7 +146,7 @@ class DbVkUser implements \AppBundle\Model\User\AbstractVKUser
     }
 
     /**
-     * @param \AppBundle\Model\VkApi\Common $vkCommonApi
+     * @param Common $vkCommonApi
      */
     public function setVkCommonApi($vkCommonApi)
     {
@@ -81,5 +169,35 @@ class DbVkUser implements \AppBundle\Model\User\AbstractVKUser
         $this->em = $em;
     }
 
+    /**
+     * @return \AppBundle\Model\VkApi\CommonValidator
+     */
+    public function getVkApiValidator()
+    {
+        return $this->vkApiValidator;
+    }
 
+    /**
+     * @param \AppBundle\Model\VkApi\CommonValidator $vkApiValidator
+     */
+    public function setVkApiValidator($vkApiValidator)
+    {
+        $this->vkApiValidator = $vkApiValidator;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOffsetForApiResponses()
+    {
+        return $this->offsetForApiResponses;
+    }
+
+    /**
+     * @param int $offsetForApiResponses
+     */
+    public function setOffsetForApiResponses($offsetForApiResponses)
+    {
+        $this->offsetForApiResponses = $offsetForApiResponses;
+    }
 } 

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Model\Input;
 
+use AppBundle\Exception\CsvParseException;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -17,25 +18,23 @@ class CSVData implements \AppBundle\Model\Input\AbstractInputData
      * Validate file and parse data from it
      *
      * @param $input
+     * @throws \AppBundle\Exception\CsvParseException
      * @return array
-     * @throws \Exception
      */
     public function retrieveAllIds($input)
     {
         if (!file_exists($input)) {
 
-            throw new \ParseError('File doesn\'t exist');
+            throw new CsvParseException('File doesn\'t exist by path: ' . serialize($input));
         }
         if (!is_readable($input)) {
-            throw new \ParseError('Can\'t read file');
+            throw new CsvParseException('Can\'t read file: ' . serialize($input));
         }
         if (filesize($input) == 0) {
-            throw new \ParseError('File is empty');
+            throw new CsvParseException('File is empty: ' . serialize($input));
         }
 
         $idsArray = str_getcsv(file_get_contents($input));
-
-        //TODO: check is array has empty values
 
         return $idsArray;
     }

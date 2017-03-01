@@ -10,7 +10,7 @@ services:
     vk.rabbitmq_user:
 #        class:        AppBundle\Model\User\RabbitMQVKUser
         class:        AppBundle\Model\User\DbVkUser
-        arguments: ["@vk.common_api", "@doctrine.orm.default_entity_manager"]
+        arguments: ["@vk.common_api", "@doctrine.orm.default_entity_manager", "@vk.common_api_validator"]
 
     vk.db_user:
             class:        AppBundle\Model\User\RabbitMQVKUser
@@ -26,3 +26,5 @@ services:
     vk.common_api:
         class:        AppBundle\Model\VkApi\Common
         arguments: ["@vk.sdk", '%vk_access_token%']
+    vk.common_api_validator:
+        class:        AppBundle\Model\VkApi\CommonValidator
