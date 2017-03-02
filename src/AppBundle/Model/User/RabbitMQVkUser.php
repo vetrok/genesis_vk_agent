@@ -10,7 +10,7 @@ namespace AppBundle\Model\User;
  *
  * @package AppBundle\Model\User
  */
-class RabbitMQVKUser implements \AppBundle\Model\User\AbstractVkUser
+class RabbitMQVkUser implements \AppBundle\Model\User\AbstractVkUser
 {
     /**
      * @var RabbitMQ producer object which puts data to query
