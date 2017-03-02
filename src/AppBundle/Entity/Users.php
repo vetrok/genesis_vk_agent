@@ -51,7 +51,7 @@ class Users
     private $id;
 
     /**
-     * @ORM\OneToMany(targetEntity="\AppBundle\Entity\Albums", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="\AppBundle\Entity\Albums", mappedBy="user", cascade={"persist"})
      */
     private $albums;
 

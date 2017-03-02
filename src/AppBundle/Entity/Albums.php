@@ -54,7 +54,7 @@ class Albums
     private $user;
 
     /**
-     * @ORM\OneToMany(targetEntity="\AppBundle\Entity\Photos", mappedBy="album", cascade={"all"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="\AppBundle\Entity\Photos", mappedBy="album", cascade={"persist"}, orphanRemoval=true)
      */
     private $photos;
 

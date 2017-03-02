@@ -46,7 +46,7 @@ class Photos
     private $album;
 
     /**
-     * @ORM\OneToMany(targetEntity="\AppBundle\Entity\PhotoSizes", mappedBy="photo")
+     * @ORM\OneToMany(targetEntity="\AppBundle\Entity\PhotoSizes", mappedBy="photo", cascade={"persist"})
      */
     private $photoSizes;
 
