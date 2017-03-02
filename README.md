@@ -13,11 +13,11 @@ Set up
 3. Insert credentials
 --------------
 
-a. For db (framework will ask it when composer will be updating), they can be found in app\config\parameters.yml
+a. For db (framework will ask it when composer will be updating), they can be found in `app\config\parameters.yml`
 
-b. For RabbitMQ - in app\config\config.yml, old_sound_rabbit_mq block
+b. For RabbitMQ - in app\config\config.yml, `old_sound_rabbit_mq` block
 
-c. Access token for VK api (framework will ask it when composer will be updating), can be found in app\config\parameters.yml
+c. Access token for VK api (framework will ask it when composer will be updating), can be found in `app\config\parameters.yml`
 
 4. Database set-up
 --------------
@@ -37,7 +37,7 @@ php bin/console doctrine:migrations:migrate
 5. RabbitMQ set-up
 --------------
 
-Run endless loop from command line, project is using bundle php-amqplib/rabbitmq-bundle ,
+Run endless loop from command line, project is using bundle `php-amqplib/rabbitmq-bundle` ,
 check documentation on https://github.com/php-amqplib/RabbitMqBundle
 
 ~~~
