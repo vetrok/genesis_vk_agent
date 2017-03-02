@@ -27,10 +27,5 @@
         <option name="fixed"/>
       </options>
     </field>
-    <field name="created" type="integer" column="created" nullable="false">
-      <options>
-        <option name="unsigned">1</option>
-      </options>
-    </field>
   </entity>
 </doctrine-mapping>

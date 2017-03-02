@@ -5,12 +5,12 @@
       <index name="IDX_CCF80DE7E9E4C8C" columns="photo_id"/>
     </indexes>
     <unique-constraints>
-      <unique-constraint name="UNIQ_CCF80DE7E9E4C8CF7C0246A" columns="photo_id,size"/>
+      <unique-constraint name="UNIQ_CCF80DE7E9E4C8C8CDE5729" columns="photo_id,type"/>
     </unique-constraints>
     <id name="id" type="integer" column="id">
       <generator strategy="IDENTITY"/>
     </id>
-    <field name="size" type="string" column="size" length="32" nullable="false">
+    <field name="type" type="string" column="type" length="32" nullable="false">
       <options>
         <option name="fixed"/>
       </options>
