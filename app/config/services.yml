@@ -8,9 +8,11 @@ services:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
     vk.db_user:
+#    vk.rabbitmq_user:
         class:        AppBundle\Model\User\DbVkUser
         arguments: ["@vk.common_api", "@doctrine.orm.default_entity_manager", "@vk.common_api_validator"]
     vk.rabbitmq_user:
+#    vk.db_user:
         class:        AppBundle\Model\User\RabbitMQVkUser
         arguments: ["@old_sound_rabbit_mq.import_user_producer"]
     vk.from_csv:
