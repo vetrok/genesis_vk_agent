@@ -13,14 +13,14 @@ Set up
 3. Insert credentials
 --------------
 
-a. For db (framework will ask it when composer will be updating), they can be found in app\config\parameters.yml
-b. For RabbitMQ - in app\config\config.yml, old_sound_rabbit_mq block
-c. Access token for VK api (framework will ask it when composer will be updating), can be found in app\config\parameters.yml
+a. For db (framework will ask it when composer will be updating), they can be found in app\config\parameters.yml.
+b. For RabbitMQ - in app\config\config.yml, old_sound_rabbit_mq block.
+c. Access token for VK api (framework will ask it when composer will be updating), can be found in app\config\parameters.yml.
 
 4. Database set-up
 --------------
 
-a. Create database
+a) Create database
 
 ~~~
 php bin/console doctrine:database:create
