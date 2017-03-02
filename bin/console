@@ -1,6 +1,9 @@
 #!/usr/bin/env php
 <?php
 
+use AppBundle\Command\GetVkUser;
+use AppBundle\Command\GetVkUserAlbums;
+use AppBundle\Command\GetVkUserPhotos;
 use AppBundle\Command\ImportVkUser;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -27,4 +30,7 @@ if ($debug) {
 $kernel = new AppKernel($env, $debug);
 $application = new Application($kernel);
 $application->add(new ImportVkUser());
+$application->add(new GetVkUser());
+$application->add(new GetVkUserAlbums());
+$application->add(new GetVkUserPhotos());
 $application->run($input);

@@ -10,6 +10,11 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
 class ImportVkUser extends ContainerAwareCommand
 {
+    /**
+     * @var OutputInterface
+     */
+    protected $output;
+
     protected function configure()
     {
         $this
@@ -29,14 +34,6 @@ class ImportVkUser extends ContainerAwareCommand
                 'int'
             )
 
-            ->addOption(
-                'test',
-                null,
-                InputArgument::OPTIONAL,
-                'Tester',
-                '0'
-            )
-
             // the full command description shown when running the command with
             // the "--help" option
             ->setHelp('Import VK user by ID, you can pass single id or .csv file with multiple id\'s')
@@ -52,14 +49,12 @@ class ImportVkUser extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->setOutput($output);
         //VK id can be int or string
         $userId = $input->getArgument('user_id');
         //Recognize input type and get values from it
         if ($input->getOption('data_type') == 'csv') {
             $this->parseCSVAction($userId);
-        } else if ($input->getOption('test')) {
-            //TODO: del test
-            $this->test($userId);
         } else {
             $this->indexAction($userId);
         }
@@ -92,26 +87,46 @@ class ImportVkUser extends ContainerAwareCommand
      *
      * @param $input
      * @param $idRetrieverName
+     * @return bool
      */
     protected function saveUser($input, $idRetrieverName)
     {
         $serviceContainer = $this->getContainer();
         $idRetriever = $serviceContainer->get($idRetrieverName);
-        $usersId = $idRetriever->retrieveAllIds($input);
+        $usersIds = $idRetriever->retrieveAllIds($input);
 
-        //TODO: validation open question - should validate on model or here?
+        foreach ($usersIds as $singleId) {
+            if (empty(trim($singleId))) {
+                $this->getOutput()->writeln('Request contains empty ID values!');
+                return;
+            }
+        }
+
         //Insert id's
-        $vkUser = $this->getContainer()->get('vk.rabbitmq_user');
-        foreach ($usersId as $singleId) {
+        $vkUser = $serviceContainer->get('vk.rabbitmq_user');
+        foreach ($usersIds as $singleId) {
 
             $vkUser->importUserFacade($singleId);
         }
+
+        $this->getOutput()->writeln('Your request is handling');
+        return true;
     }
 
-    public function test($userId)
+
+    /**
+     * @return mixed
+     */
+    public function getOutput()
     {
-//        echo $this->getContainer()->get('old_sound_rabbit_mq.import_user_producer')->publish($userId);
-        echo 1010;
-//        $this->get('vk_user_rabbit_mq.user_creator_producer')->publish(1234321);
+        return $this->output;
+    }
+
+    /**
+     * @param mixed $output
+     */
+    public function setOutput($output)
+    {
+        $this->output = $output;
     }
 } 
