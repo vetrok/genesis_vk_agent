@@ -42,10 +42,10 @@ class CommonValidator implements AbstractCommonValidator
     {
         if (isset($apiResponse[0]['deactivated'])) {
 
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**

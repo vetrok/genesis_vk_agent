@@ -71,7 +71,7 @@ class DbVkUser implements AbstractVkUser
         }
 
         //If user was in my DB and now he is deactivated - del user
-        if (!$apiValidator->isUserDeactivated($apiResponseUser)) {
+        if ($apiValidator->isUserDeactivated($apiResponseUser)) {
             $em->getConnection()->commit();
             return true;
         }
