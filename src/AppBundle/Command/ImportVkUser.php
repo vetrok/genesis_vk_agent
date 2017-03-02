@@ -49,10 +49,6 @@ class ImportVkUser extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $x = 'vk.import_user_callback';
-        $serviceContainer = $this->getContainer();
-        $idRetriever = $serviceContainer->get($x);
-
         $this->setOutput($output);
         //VK id can be int or string
         $userId = $input->getArgument('user_id');

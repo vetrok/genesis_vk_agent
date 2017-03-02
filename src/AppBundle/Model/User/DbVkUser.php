@@ -70,8 +70,8 @@ class DbVkUser implements AbstractVkUser
             $em->flush();
         }
 
-        //If user was in my DB and now he is deactiveted - del user
-        if ($apiValidator->isUserDeactivated($apiResponseUser)) {
+        //If user was in my DB and now he is deactivated - del user
+        if (!$apiValidator->isUserDeactivated($apiResponseUser)) {
             $em->getConnection()->commit();
             return true;
         }
