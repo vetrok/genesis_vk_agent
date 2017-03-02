@@ -21,7 +21,6 @@ class Version20170228103721 extends AbstractMigration
         $myTable->addColumn('first_name', 'string');
         $myTable->addColumn('last_name', 'string');
         $myTable->addColumn('screen_name', 'string');
-        $myTable->addColumn('created', 'integer', ["unsigned" => true]);
         $myTable->addUniqueIndex(["vk_id"]);
         $myTable->setPrimaryKey(["id"]);
     }

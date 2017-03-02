@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * PhotoSizes
  *
- * @ORM\Table(name="photo_sizes", uniqueConstraints={@ORM\UniqueConstraint(name="UNIQ_CCF80DE7E9E4C8CF7C0246A", columns={"photo_id", "size"})}, indexes={@ORM\Index(name="IDX_CCF80DE7E9E4C8C", columns={"photo_id"})})
+ * @ORM\Table(name="photo_sizes", uniqueConstraints={@ORM\UniqueConstraint(name="UNIQ_CCF80DE7E9E4C8C8CDE5729", columns={"photo_id", "type"})}, indexes={@ORM\Index(name="IDX_CCF80DE7E9E4C8C", columns={"photo_id"})})
  * @ORM\Entity
  */
 class PhotoSizes
@@ -15,9 +15,9 @@ class PhotoSizes
     /**
      * @var string
      *
-     * @ORM\Column(name="size", type="string", length=32, nullable=false)
+     * @ORM\Column(name="type", type="string", length=32, nullable=false)
      */
-    private $size;
+    private $type;
 
     /**
      * @var string
@@ -48,27 +48,27 @@ class PhotoSizes
 
 
     /**
-     * Set size
+     * Set type
      *
-     * @param string $size
+     * @param string $type
      *
      * @return PhotoSizes
      */
-    public function setSize($size)
+    public function setType($type)
     {
-        $this->size = $size;
+        $this->type = $type;
 
         return $this;
     }
 
     /**
-     * Get size
+     * Get type
      *
      * @return string
      */
-    public function getSize()
+    public function getType()
     {
-        return $this->size;
+        return $this->type;
     }
 
     /**

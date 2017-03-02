@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Photos
  *
- * @ORM\Table(name="photos", uniqueConstraints={@ORM\UniqueConstraint(name="UNIQ_876E0D9C5978E527E3C61F9", columns={"vk_id", "owner_id"})}, indexes={@ORM\Index(name="IDX_876E0D97E3C61F9", columns={"owner_id"}), @ORM\Index(name="IDX_876E0D91137ABCF", columns={"album_id"})})
+ * @ORM\Table(name="photos", indexes={@ORM\Index(name="IDX_876E0D91137ABCF", columns={"album_id"})})
  * @ORM\Entity
  */
 class Photos
@@ -18,13 +18,6 @@ class Photos
      * @ORM\Column(name="vk_id", type="integer", nullable=false)
      */
     private $vkId;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="link", type="string", length=255, nullable=false)
-     */
-    private $link;
 
     /**
      * @var integer
@@ -43,16 +36,6 @@ class Photos
     private $id;
 
     /**
-     * @var \AppBundle\Entity\Users
-     *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Users")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="owner_id", referencedColumnName="id")
-     * })
-     */
-    private $owner;
-
-    /**
      * @var \AppBundle\Entity\Albums
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Albums")
@@ -61,6 +44,11 @@ class Photos
      * })
      */
     private $album;
+
+    /**
+     * @ORM\OneToMany(targetEntity="\AppBundle\Entity\PhotoSizes", mappedBy="photo")
+     */
+    private $photoSizes;
 
 
 
@@ -86,30 +74,6 @@ class Photos
     public function getVkId()
     {
         return $this->vkId;
-    }
-
-    /**
-     * Set link
-     *
-     * @param string $link
-     *
-     * @return Photos
-     */
-    public function setLink($link)
-    {
-        $this->link = $link;
-
-        return $this;
-    }
-
-    /**
-     * Get link
-     *
-     * @return string
-     */
-    public function getLink()
-    {
-        return $this->link;
     }
 
     /**
@@ -147,30 +111,6 @@ class Photos
     }
 
     /**
-     * Set owner
-     *
-     * @param \AppBundle\Entity\Users $owner
-     *
-     * @return Photos
-     */
-    public function setOwner(\AppBundle\Entity\Users $owner = null)
-    {
-        $this->owner = $owner;
-
-        return $this;
-    }
-
-    /**
-     * Get owner
-     *
-     * @return \AppBundle\Entity\Users
-     */
-    public function getOwner()
-    {
-        return $this->owner;
-    }
-
-    /**
      * Set album
      *
      * @param \AppBundle\Entity\Albums $album
@@ -192,5 +132,21 @@ class Photos
     public function getAlbum()
     {
         return $this->album;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPhotoSizes()
+    {
+        return $this->photoSizes;
+    }
+
+    /**
+     * @param mixed $photoSizes
+     */
+    public function setPhotoSizes($photoSizes)
+    {
+        $this->photoSizes = $photoSizes;
     }
 }

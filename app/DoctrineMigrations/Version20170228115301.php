@@ -17,11 +17,11 @@ class Version20170228115301 extends AbstractMigration
     {
         $myTable = $schema->createTable('photo_sizes');
         $myTable->addColumn('id', 'integer', ['autoincrement' => true, 'unsigned ' => true]);
-        $myTable->addColumn('photo_id', 'integer');
-        $myTable->addColumn('size', 'string', ['length' => 32]);
+        $myTable->addColumn('photo_id', 'integer', ['unsigned ' => true]);
+        $myTable->addColumn('type', 'string', ['length' => 32]);
         $myTable->addColumn('link', 'string');
         $myTable->setPrimaryKey(['id']);
-        $myTable->addUniqueIndex(["photo_id", "size"]);
+        $myTable->addUniqueIndex(["photo_id", "type"]);
         $myTable->addForeignKeyConstraint(
             'photos',
             ['photo_id'],

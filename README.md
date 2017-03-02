@@ -1,69 +1,77 @@
-Symfony Standard Edition
+VK user parser
 ========================
 
-Welcome to the Symfony Standard Edition - a fully-functional Symfony
-application that you can use as the skeleton for your new applications.
-
-For details on how to download and get started with Symfony, see the
-[Installation][1] chapter of the Symfony Documentation.
-
-What's inside?
+Set up
 --------------
 
-The Symfony Standard Edition is configured with the following defaults:
+1. Clone repository
+--------------
 
-  * An AppBundle you can use to start coding;
+2. Update composer
+--------------
 
-  * Twig as the only configured template engine;
+???
 
-  * Doctrine ORM/DBAL;
+3. Insert credentials
+--------------
 
-  * Swiftmailer;
+1. For db (framework will ask it when composer will be updating), they can be found in app\config\parameters.yml
+2. For RabbitMQ - in app\config\config.yml, old_sound_rabbit_mq block
+3. Access token for VK api (framework will ask it when composer will be updating), can be found in app\config\parameters.yml
 
-  * Annotations enabled for everything.
+4. Database set-up
+--------------
 
-It comes pre-configured with the following bundles:
+1. Create database
 
-  * **FrameworkBundle** - The core Symfony framework bundle
+php bin/console doctrine:database:create
 
-  * [**SensioFrameworkExtraBundle**][6] - Adds several enhancements, including
-    template and routing annotation capability
+2. Migrate database structure
 
-  * [**DoctrineBundle**][7] - Adds support for the Doctrine ORM
+php bin/console doctrine:migrations:migrate
 
-  * [**TwigBundle**][8] - Adds support for the Twig templating engine
+5. RabbitMQ set-up
+--------------
 
-  * [**SecurityBundle**][9] - Adds security by integrating Symfony's security
-    component
+1. Run endless loop from command line
 
-  * [**SwiftmailerBundle**][10] - Adds support for Swiftmailer, a library for
-    sending emails
+php bin/console rabbitmq:consumer import_user
 
-  * [**MonologBundle**][11] - Adds support for Monolog, a logging library
+Done! Try to use application
 
-  * **WebProfilerBundle** (in dev/test env) - Adds profiling functionality and
-    the web debug toolbar
+How to use
+========================
 
-  * **SensioDistributionBundle** (in dev/test env) - Adds functionality for
-    configuring and working with Symfony distributions
+1. Import user
+--------------
 
-  * [**SensioGeneratorBundle**][13] (in dev/test env) - Adds code generation
-    capabilities
+a) Single ID
 
-  * **DebugBundle** (in dev/test env) - Adds Debug and VarDumper component
-    integration
+php bin/console vk:import_user [user_id]
 
-All libraries and bundles included in the Symfony Standard Edition are
-released under the MIT or BSD license.
+b) Path to file in csv format
 
-Enjoy!
+php bin/console vk:import_user [path] --data_type=csv
 
-[1]:  https://symfony.com/doc/3.2/setup.html
-[6]:  https://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/index.html
-[7]:  https://symfony.com/doc/3.2/doctrine.html
-[8]:  https://symfony.com/doc/3.2/templating.html
-[9]:  https://symfony.com/doc/3.2/security.html
-[10]: https://symfony.com/doc/3.2/email.html
-[11]: https://symfony.com/doc/3.2/logging.html
-[12]: https://symfony.com/doc/3.2/assetic/asset_management.html
-[13]: https://symfony.com/doc/current/bundles/SensioGeneratorBundle/index.html
+1. Get imported user albums with photos
+--------------
+
+
+php bin/console vk:get_user [user_id]
+
+php bin/console vk:get_user_albums [user_id] --limit=[int] --offset=[int]
+
+php bin/console vk:get_user_photos [user_id] --album_id=[int] --offset=[int] --limit=[int]
+
+
+Generate DB
+
+php bin/console doctrine:database:create
+
+php bin/console doctrine:migrations:status
+
+php bin/console doctrine:migrations:migrate
+
+php bin/console doctrine:migrations:generate
+
+

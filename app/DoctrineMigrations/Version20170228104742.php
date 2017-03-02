@@ -18,14 +18,14 @@ class Version20170228104742 extends AbstractMigration
         $myTable = $schema->createTable('albums');
         $myTable->addColumn('id', 'integer', ['autoincrement' => true, 'unsigned ' => true]);
         $myTable->addColumn('vk_id', 'integer');
-        $myTable->addColumn('owner_id', 'integer');
+        $myTable->addColumn('user_id', 'integer', ['unsigned ' => true]);
         $myTable->addColumn('title', 'string');
         $myTable->addColumn('created', 'integer', ["unsigned" => true]);
         $myTable->setPrimaryKey(["id"]);
-        $myTable->addUniqueIndex(["vk_id", "owner_id"]);
+        $myTable->addUniqueIndex(["vk_id", "user_id"]);
         $myTable->addForeignKeyConstraint(
             'users',
-            ['owner_id'],
+            ['user_id'],
             ['id'],
             ['onUpdate' => 'CASCADE', 'onDelete' => 'CASCADE']
         );

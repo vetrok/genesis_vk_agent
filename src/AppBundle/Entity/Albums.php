@@ -2,12 +2,13 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Albums
  *
- * @ORM\Table(name="albums", uniqueConstraints={@ORM\UniqueConstraint(name="UNIQ_F4E2474FC5978E527E3C61F9", columns={"vk_id", "owner_id"})}, indexes={@ORM\Index(name="IDX_F4E2474F7E3C61F9", columns={"owner_id"})})
+ * @ORM\Table(name="albums", uniqueConstraints={@ORM\UniqueConstraint(name="UNIQ_F4E2474FC5978E52A76ED395", columns={"vk_id", "user_id"})}, indexes={@ORM\Index(name="IDX_F4E2474FA76ED395", columns={"user_id"})})
  * @ORM\Entity
  */
 class Albums
@@ -47,12 +48,20 @@ class Albums
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Users")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="owner_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      * })
      */
-    private $owner;
+    private $user;
 
+    /**
+     * @ORM\OneToMany(targetEntity="\AppBundle\Entity\Photos", mappedBy="album", cascade={"all"}, orphanRemoval=true)
+     */
+    private $photos;
 
+    public function __construct()
+    {
+        $this->photos = new ArrayCollection();
+    }
 
     /**
      * Set vkId
@@ -137,26 +146,42 @@ class Albums
     }
 
     /**
-     * Set owner
+     * Set user
      *
-     * @param \AppBundle\Entity\Users $owner
+     * @param \AppBundle\Entity\Users $user
      *
      * @return Albums
      */
-    public function setOwner(\AppBundle\Entity\Users $owner = null)
+    public function setUser(\AppBundle\Entity\Users $user = null)
     {
-        $this->owner = $owner;
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * Get owner
+     * Get user
      *
      * @return \AppBundle\Entity\Users
      */
-    public function getOwner()
+    public function getUser()
     {
-        return $this->owner;
+        return $this->user;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPhotos()
+    {
+        return $this->photos;
+    }
+
+    /**
+     * @param mixed $photos
+     */
+    public function setPhotos($photos)
+    {
+        $this->photos = $photos;
     }
 }
