@@ -6,7 +6,7 @@ use AppBundle\Entity\Albums;
 use AppBundle\Entity\Photos;
 use AppBundle\Entity\PhotoSizes;
 use AppBundle\Entity\Users;
-use AppBundle\Model\User\AbstractVKUser;
+use AppBundle\Model\User\AbstractVkUser;
 use AppBundle\Model\VkApi\Common;
 use AppBundle\Model\VkApi\CommonValidator;
 
@@ -18,7 +18,7 @@ use AppBundle\Model\VkApi\CommonValidator;
  *
  * @package AppBundle\Model\User
  */
-class DbVkUser implements AbstractVKUser
+class DbVkUser implements AbstractVkUser
 {
     /**
      * @var Common api data manipulator
@@ -51,6 +51,7 @@ class DbVkUser implements AbstractVKUser
      * Put user to query
      *
      * @param $id
+     * @return bool
      */
     public function importUserFacade($id)
     {
@@ -58,7 +59,6 @@ class DbVkUser implements AbstractVKUser
         $apiResponseUser = $api->getUser($id);
         $apiValidator = $this->getVkApiValidator();
         $apiValidator->checkIsUserValid($apiResponseUser);
-        $userApi = $apiResponseUser[0];
 
         //Delete user
         $em = $this->getEm();
@@ -70,6 +70,13 @@ class DbVkUser implements AbstractVKUser
             $em->flush();
         }
 
+        //If user was in my DB and now he is deactiveted - del user
+        if ($apiValidator->isUserDeactivated($apiResponseUser)) {
+            $em->getConnection()->commit();
+            return true;
+        }
+
+        $userApi = $apiResponseUser[0];
         //Create new user
         $userDb = new Users();
         $vkUserId = $userApi['id'];
@@ -135,6 +142,8 @@ class DbVkUser implements AbstractVKUser
 
         $em->flush();
         $em->getConnection()->commit();
+
+        return true;
     }
 
     /**
