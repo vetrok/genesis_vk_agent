@@ -50,7 +50,7 @@ Done! Try to use application
 How to use
 ========================
 
-1. Import user
+Import user
 --------------
 
 a) Single ID
