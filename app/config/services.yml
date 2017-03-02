@@ -19,7 +19,7 @@ services:
         class:        AppBundle\Model\Input\SingleData
     vk.import_user_callback:
         class:        AppBundle\Consumer\UserConsumer
-        arguments: ["@vk.db_user"]
+        arguments: ["@vk.db_user", "@logger"]
 
     vk.sdk:
         class:        BW\Vkontakte

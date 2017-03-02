@@ -3,7 +3,7 @@
 namespace AppBundle\Model\User;
 
 
-interface AbstractVKUser
+interface AbstractVkUser
 {
     public function importUserFacade($id);
 } 

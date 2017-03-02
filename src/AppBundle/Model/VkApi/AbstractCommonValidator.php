@@ -19,4 +19,6 @@ interface AbstractCommonValidator
     public function checkIsUserValid($apiResponse);
 
     public function areItemsExists($apiResponse);
+
+    public function isUserDeactivated($apiResponse);
 } 

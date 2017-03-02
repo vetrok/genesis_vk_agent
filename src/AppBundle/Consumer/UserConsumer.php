@@ -2,6 +2,7 @@
 
 namespace AppBundle\Consumer;
 
+use AppBundle\Exception\ApiUserDoesntExist;
 use OldSound\RabbitMqBundle\RabbitMq\ConsumerInterface;
 use PhpAmqpLib\Message\AMQPMessage;
 
@@ -15,6 +16,11 @@ class UserConsumer implements ConsumerInterface
     public function __construct(\AppBundle\Model\User\AbstractVkUser $userImporter, $logger = 1)
     {
         $this->setImporter($userImporter);
+    }
+
+    public function test()
+    {
+        $x = 22;
     }
 
     public function execute(AMQPMessage $msg)
@@ -35,11 +41,14 @@ class UserConsumer implements ConsumerInterface
 
         //TODO: write exception to log
         try {
-
+            $this->getImporter()->importUserFacade($msg->body);
+            return true;
         } catch (ApiUserDoesntExist $e) {
-
+            return true;
+        } finally {
+            //All other cases are put ID to queue again
+            return false;
         }
-
     }
 
     /**
